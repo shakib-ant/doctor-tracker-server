@@ -18,3 +18,4 @@ patientRoutes.patch("/:id", updatePatient);
 patientRoutes.delete("/:id", deletePatient);
 
 export default patientRoutes;
+

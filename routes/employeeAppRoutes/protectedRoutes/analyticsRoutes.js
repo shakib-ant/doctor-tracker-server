@@ -6,3 +6,4 @@ const analyticsRoutes = Router();
 analyticsRoutes.get("/dashboard", getDashboardAnalytics);
 
 export default analyticsRoutes;
+

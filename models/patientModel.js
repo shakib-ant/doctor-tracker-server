@@ -79,3 +79,4 @@ patientSchema.index({ name: "text", condition: "text" });
 const Patient = models.Patient || model("Patient", patientSchema);
 
 export default Patient;
+
