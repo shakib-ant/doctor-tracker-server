@@ -6,6 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "server": "node --watch server.js",
+    "seed": "node scripts/seedData.js",
     "lint": "eslint ."
   },
   "type": "module",
@@ -38,10 +39,10 @@
   "imports": {
     "#models/*": "./models/*",
     "#controllers/*": "./controllers/*",
-    "#routes/*": "./routes/*",
     "#middlewares/*": "./middlewares/*",
-    "#services/*": "./services/*",
     "#config/*": "./config/*",
+    "#routes/*": "./routes/*",
+    "#services/*": "./services/*",
     "#utils/*": "./utils/*"
   }
 }

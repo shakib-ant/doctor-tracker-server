@@ -3,6 +3,8 @@ import employeeInviteRoutes from "./employeeInviteRoutes/empoloyeeInviteRoutes.j
 import employeeRoutes from "./employeeRoutes/employeeRoutes.js";
 import tagRoutes from "./tagRoutes.js";
 import doctorRoutes from "./doctorRoutes.js";
+import patientRoutes from "./patientRoutes.js";
+import analyticsRoutes from "./analyticsRoutes.js";
 
 const protectedRoutes = Router();
 
@@ -10,5 +12,7 @@ protectedRoutes.use("/invites", employeeInviteRoutes);
 protectedRoutes.use("/employees", employeeRoutes);
 protectedRoutes.use("/tags", tagRoutes);
 protectedRoutes.use("/doctors", doctorRoutes);
+protectedRoutes.use("/patients", patientRoutes);
+protectedRoutes.use("/analytics", analyticsRoutes);
 
 export default protectedRoutes;

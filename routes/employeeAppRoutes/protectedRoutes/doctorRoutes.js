@@ -6,6 +6,11 @@ import {
   updateDoctor,
   archiveDoctor,
 } from "#controllers/protected/doctorController.js";
+import {
+  getPatientsByDoctor,
+  createPatient,
+  deletePatient,
+} from "#controllers/protected/patientController.js";
 
 const doctorRoutes = Router();
 
@@ -17,5 +22,12 @@ doctorRoutes.patch("/:id", updateDoctor);
 doctorRoutes.patch("/update/:id", updateDoctor);
 doctorRoutes.patch("/archive/:id", archiveDoctor);
 
-export default doctorRoutes;
+// Nested Doctor Patients API
+doctorRoutes.get("/:doctorId/patients", getPatientsByDoctor);
+doctorRoutes.post("/:doctorId/patients", (req, res, next) => {
+  req.body.doctor = req.params.doctorId;
+  return createPatient(req, res, next);
+});
+doctorRoutes.delete("/:doctorId/patients/:id", deletePatient);
 
+export default doctorRoutes;
