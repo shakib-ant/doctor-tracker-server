@@ -7,6 +7,7 @@
     "start": "node server.js",
     "server": "node --watch server.js",
     "seed": "node scripts/seedData.js",
+    "seed:50doctors": "node scripts/seed50Doctors.js",
     "lint": "eslint ."
   },
   "type": "module",
