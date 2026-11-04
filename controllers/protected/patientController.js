@@ -107,9 +107,19 @@ export const getAllPatients = async (req, res) => {
       doctorId,
       startDate,
       endDate,
+      archived = "active", // "active" | "archived" | "all"
     } = req.query;
 
     const query = {};
+
+    if (archived === "archived" || archived === "true") {
+      query.isArchived = true;
+    } else if (archived === "all") {
+      // Show both active and archived
+    } else {
+      // Default: Active only
+      query.isArchived = { $ne: true };
+    }
 
     if (doctorId && mongoose.Types.ObjectId.isValid(doctorId)) {
       query.doctor = doctorId;
@@ -288,7 +298,7 @@ export const updatePatient = async (req, res) => {
   }
 };
 
-export const deletePatient = async (req, res) => {
+export const archivePatient = async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -299,7 +309,7 @@ export const deletePatient = async (req, res) => {
       });
     }
 
-    const patient = await Patient.findByIdAndDelete(id);
+    const patient = await Patient.findById(id);
 
     if (!patient) {
       return res.status(404).json({
@@ -308,10 +318,75 @@ export const deletePatient = async (req, res) => {
       });
     }
 
+    if (req.body && req.body.isArchived !== undefined) {
+      patient.isArchived =
+        req.body.isArchived === true || req.body.isArchived === "true";
+    } else {
+      patient.isArchived = !patient.isArchived;
+    }
+
+    await patient.save();
+
     return res.status(200).json({
       success: true,
-      message: "Patient deleted successfully",
-      data: { id: patient._id },
+      message: `Patient record ${patient.isArchived ? "archived" : "unarchived"} successfully`,
+      data: patient,
+    });
+  } catch (error) {
+    console.error("Archive patient error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to toggle patient archive status",
+    });
+  }
+};
+
+export const deletePatient = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { hardDelete } = req.query;
+
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid patient ID format",
+      });
+    }
+
+    if (hardDelete === "true") {
+      const patient = await Patient.findByIdAndDelete(id);
+
+      if (!patient) {
+        return res.status(404).json({
+          success: false,
+          message: "Patient not found",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: "Patient permanently removed",
+        data: { id: patient._id },
+      });
+    }
+
+    // Default: Soft archive
+    const patient = await Patient.findById(id);
+
+    if (!patient) {
+      return res.status(404).json({
+        success: false,
+        message: "Patient not found",
+      });
+    }
+
+    patient.isArchived = true;
+    await patient.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Patient archived successfully. Record is safely preserved and can be unarchived anytime.",
+      data: patient,
     });
   } catch (error) {
     console.error("Delete patient error:", error);

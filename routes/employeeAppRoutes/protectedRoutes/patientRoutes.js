@@ -5,6 +5,7 @@ import {
   getPatientById,
   updatePatient,
   deletePatient,
+  archivePatient,
   getPatientsByDoctor,
 } from "#controllers/protected/patientController.js";
 
@@ -15,6 +16,7 @@ patientRoutes.post("/", createPatient);
 patientRoutes.get("/by-doctor/:doctorId", getPatientsByDoctor);
 patientRoutes.get("/:id", getPatientById);
 patientRoutes.patch("/:id", updatePatient);
+patientRoutes.patch("/archive/:id", archivePatient);
 patientRoutes.delete("/:id", deletePatient);
 
 export default patientRoutes;

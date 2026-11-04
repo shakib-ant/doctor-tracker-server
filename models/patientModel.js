@@ -71,6 +71,11 @@ const patientSchema = new Schema(
       trim: true,
       default: "",
     },
+    isArchived: {
+      type: Boolean,
+      default: false,
+      index: true,
+    },
   },
   {
     timestamps: true,
