@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import asyncHandler from "express-async-handler";
 import Employee from "../models/authModels/employeeModel.js";
+import Customer from "../models/clientsModel.js";
 
 const { verify } = jwt;
 
@@ -45,7 +46,7 @@ const protectForEmployee = asyncHandler(async (req, res, next) => {
       req.employee = await Employee.findById(decoded.id).select("-password");
 
       next();
-    } catch (error) {
+    } catch {
       res.send(401);
       throw new Error("Not Authorized");
     }

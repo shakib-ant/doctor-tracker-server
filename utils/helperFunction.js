@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 
-const { sign, verify } = jwt;
+const { sign } = jwt;
 
 // Generate Token
 export function generateToken(id) {

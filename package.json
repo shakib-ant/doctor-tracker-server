@@ -1,5 +1,5 @@
 {
-  "name": "mkr-backnd",
+  "name": "doctor-tracker-server",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",

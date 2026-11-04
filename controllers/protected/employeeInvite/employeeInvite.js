@@ -18,7 +18,7 @@ const inviteEmployee = asyncHandler(async (req, res) => {
         throw new Error("Please Enter an Email");
     }
 
-    const emailExistsAsEmployee = await Employee.findOne({ email });
+    const emailExistsAsEmployee = await Employee.findOne({ email });            
 
     if (emailExistsAsEmployee) {
         res.status(400);

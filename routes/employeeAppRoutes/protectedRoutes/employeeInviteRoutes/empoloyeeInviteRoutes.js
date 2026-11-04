@@ -3,7 +3,6 @@ import { Router } from "express";
 import {
     deleteInvite,
     getAllInvites,
-    getSingleInvite,
     inviteEmployee,
     resendInvite
 } from "#controllers/protected/employeeInvite/employeeInvite.js";
