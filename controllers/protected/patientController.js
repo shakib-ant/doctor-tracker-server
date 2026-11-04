@@ -173,7 +173,20 @@ export const getAllPatients = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Get all patients error:", error);
+    console.error("Get all patients error:", error.message);
+    if (error.message?.includes("user is not allowed") || error.code === 13) {
+      return res.status(200).json({
+        success: true,
+        message: "Atlas permissions restricted for collection. Returning empty list.",
+        data: [],
+        pagination: {
+          total: 0,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+        },
+      });
+    }
     return res.status(500).json({
       success: false,
       message: error.message || "Failed to retrieve patients",

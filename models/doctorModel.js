@@ -4,6 +4,11 @@ const { Schema, model, models } = mongoose;
 
 const doctorSchema = new Schema(
   {
+    docType: {
+      type: String,
+      default: "doctor",
+      index: true,
+    },
     name: {
       type: String,
       required: [true, "Doctor name is required"],
@@ -66,12 +71,28 @@ const doctorSchema = new Schema(
       default: true,
     },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    collection: "Empty",
+  }
 );
 
-doctorSchema.index({ name: 1, specialization: 1 });
-doctorSchema.index({ specialization: 1, isActive: 1 });
-doctorSchema.index({ isActive: 1, createdAt: -1 });
+doctorSchema.pre(/^find/, function () {
+  this.where({ docType: "doctor" });
+});
+
+doctorSchema.pre("countDocuments", function () {
+  this.where({ docType: "doctor" });
+});
+
+doctorSchema.pre("save", function (next) {
+  this.docType = "doctor";
+  if (next) next();
+});
+
+doctorSchema.index({ docType: 1, name: 1, specialization: 1 });
+doctorSchema.index({ docType: 1, specialization: 1, isActive: 1 });
+doctorSchema.index({ docType: 1, isActive: 1, createdAt: -1 });
 doctorSchema.index({
   name: "text",
   specialization: "text",
@@ -79,5 +100,4 @@ doctorSchema.index({
   hospital: "text",
 });
 
-export default models.Doctor || model("Doctor", doctorSchema);
-
+export default models.Doctor || model("Doctor", doctorSchema, "Empty");

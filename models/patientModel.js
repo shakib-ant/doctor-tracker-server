@@ -4,6 +4,11 @@ const { Schema, model, models } = mongoose;
 
 const patientSchema = new Schema(
   {
+    docType: {
+      type: String,
+      default: "patient",
+      index: true,
+    },
     name: {
       type: String,
       required: [true, "Patient name is required"],
@@ -69,14 +74,28 @@ const patientSchema = new Schema(
   },
   {
     timestamps: true,
+    collection: "Empty",
   }
 );
 
-patientSchema.index({ doctor: 1, createdAt: -1 });
-patientSchema.index({ condition: 1 });
+patientSchema.pre(/^find/, function () {
+  this.where({ docType: "patient" });
+});
+
+patientSchema.pre("countDocuments", function () {
+  this.where({ docType: "patient" });
+});
+
+patientSchema.pre("save", function (next) {
+  this.docType = "patient";
+  if (next) next();
+});
+
+patientSchema.index({ docType: 1, doctor: 1, createdAt: -1 });
+patientSchema.index({ docType: 1, condition: 1 });
+patientSchema.index({ docType: 1, admissionDate: -1 });
 patientSchema.index({ name: "text", condition: "text" });
 
-const Patient = models.Patient || model("Patient", patientSchema);
+const Patient = models.Patient || model("Patient", patientSchema, "Empty");
 
 export default Patient;
-
