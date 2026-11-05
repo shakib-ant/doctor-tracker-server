@@ -4,6 +4,7 @@
   "description": "",
   "main": "server.js",
   "scripts": {
+    "build": "echo 'Build step not required for Express backend'",
     "start": "node server.js",
     "server": "node --watch server.js",
     "seed": "node scripts/seedData.js",
