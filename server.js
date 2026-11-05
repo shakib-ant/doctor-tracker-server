@@ -25,7 +25,7 @@ app.use(
 
 app.get('/favicon.ico', (_req, res) => res.status(204).end());
 
-app.get('/', (_req, res) => {
+app.get(['/', '/api'], (_req, res) => {
   res.status(200).json({
     status: 'ONLINE',
     service: 'Doctor Tracker REST API',
