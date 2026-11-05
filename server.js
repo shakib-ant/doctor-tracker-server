@@ -9,10 +9,10 @@ import routes from './routes/routes.js';
 
 environment.config();
 const port = process.env.PORT || 5000;
-connectDB();
+
 const app = express();
 
-app.use(cors('*'));
+app.use(cors());
 app.use(morgan('dev'));
 
 app.use(express.json());
@@ -32,12 +32,27 @@ app.get('/', (_req, res) => {
   });
 });
 
+// Database connection middleware for API routes
+app.use('/api', async (_req, _res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
 app.use('/api', routes);
 
 app.use(express.static('public'));
 
 app.use(errorHandler);
 
-app.listen(port, () => {
-  console.log(`Server running on port ${port} (${process.env.NODE_ENV || 'development'})`);
-});
+// Listen locally only
+if (!process.env.VERCEL) {
+  app.listen(port, () => {
+    console.log(`Server running on port ${port} (${process.env.NODE_ENV || 'development'})`);
+  });
+}
+
+export default app;
