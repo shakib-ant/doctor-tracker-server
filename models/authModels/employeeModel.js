@@ -33,6 +33,23 @@ const employeeSchema = Schema(
       type: Boolean,
       default: true,
     },
+    status: {
+      type: String,
+      enum: ['approved', 'pending', 'rejected'],
+      default: 'approved',
+    },
+    department: {
+      type: String,
+      default: 'General Administration',
+    },
+    requestNote: {
+      type: String,
+      default: '',
+    },
+    requestedAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
   {
     timestamps: true,

@@ -53,6 +53,20 @@ export const loginEmployee = async (req, res) => {
       });
     }
 
+    if (employee.status === "pending") {
+      return res.status(403).json({
+        success: false,
+        message: "Your access request is currently pending approval by the Super Administrator.",
+      });
+    }
+
+    if (employee.status === "rejected") {
+      return res.status(403).json({
+        success: false,
+        message: "Your access request was declined. Please contact the Super Administrator.",
+      });
+    }
+
     if (!employee.isActive) {
       return res.status(403).json({
         success: false,
@@ -87,6 +101,67 @@ export const loginEmployee = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: error.message || "Failed to authenticate",
+    });
+  }
+};
+
+export const requestAccess = async (req, res) => {
+  try {
+    const { name, email, password, department, requestNote } = req.body;
+    if (!name || !email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Full name, official email, and password are required",
+      });
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    // Check if already exists
+    const existing = await Employee.findOne({ email: cleanEmail });
+    if (existing) {
+      if (existing.status === "pending") {
+        return res.status(400).json({
+          success: false,
+          message: "An access request for this email is already pending approval.",
+        });
+      }
+      return res.status(400).json({
+        success: false,
+        message: "An account with this email already exists. Please sign in.",
+      });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newRequest = await Employee.create({
+      name: name.trim(),
+      email: cleanEmail,
+      password: hashedPassword,
+      level: "employee",
+      status: "pending",
+      isActive: false,
+      department: department ? department.trim() : "General Clinical Administration",
+      requestNote: requestNote ? requestNote.trim() : "",
+      requestedAt: new Date(),
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "Access request submitted successfully. Awaiting Super Administrator approval.",
+      request: {
+        _id: newRequest._id,
+        name: newRequest.name,
+        email: newRequest.email,
+        status: newRequest.status,
+      },
+    });
+  } catch (error) {
+    console.error("Access request error:", error);
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to submit access request",
     });
   }
 };
