@@ -23,6 +23,8 @@ app.use(
   }),
 );
 
+app.get('/favicon.ico', (_req, res) => res.status(204).end());
+
 app.get('/', (_req, res) => {
   res.status(200).json({
     status: 'ONLINE',
