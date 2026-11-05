@@ -39,19 +39,5 @@ app.use(express.static('public'));
 app.use(errorHandler);
 
 app.listen(port, () => {
-  console.log(`
-┌──────────────────────────────────────────────────────────────┐
-│  🚀 DOCTOR TRACKER BACKEND REST API IS ONLINE & RUNNING      │
-├──────────────────────────────────────────────────────────────┤
-│  • Mode        : ${String(process.env.NODE_ENV || 'development').padEnd(43)} │
-│  • Port        : ${String(port).padEnd(43)} │
-│  • Base URL    : ${`http://localhost:${port}/api`.padEnd(43)} │
-│  • Healthcheck : ${`http://localhost:${port}/`.padEnd(43)} │
-│  • Doctors API : ${`/api/employeeApp/protected/doctors`.padEnd(43)} │
-│  • Patients API: ${`/api/employeeApp/protected/patients`.padEnd(43)} │
-│  • Analytics   : ${`/api/employeeApp/protected/analytics/dashboard`.padEnd(43)} │
-│  • Auth Login  : ${`/api/employeeApp/public/auth/login`.padEnd(43)} │
-└──────────────────────────────────────────────────────────────┘
-  ✔ Server listening for client requests from doctorTrackerAdmin
-  `);
+  console.log(`Server running on port ${port} (${process.env.NODE_ENV || 'development'})`);
 });
